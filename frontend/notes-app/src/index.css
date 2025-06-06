@@ -14,5 +14,7 @@
     background-color: #fdfeff;
     overflow-x: hidden;
   }
+}
 
+@layer components {
 }
