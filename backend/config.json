@@ -1,0 +1,3 @@
+{
+    "connectionString": "mongodb+srv://todoListApp:notesapp123@cluster0.tqy18v5.mongodb.net/notesapp?retryWrites=true&w=majority&appName=Cluster0"
+}
