@@ -4,8 +4,10 @@ import NoteCard from '../../components/Cards/NoteCard';
 import { MdAdd } from 'react-icons/md';
 import AddEditNotes from './AddEditNotes';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import Modal from 'react-modal';
 import { set } from 'mongoose';
+import axiosInstance from '../../utils/axiosInstance';
 
 const Home = () => {
 
@@ -14,6 +16,25 @@ const Home = () => {
     type: "add", // or "edit"
     data: null // Note object for editing
   });
+
+  const [userInfo, setUserInfo] = useState(null);
+
+  const navigate = useNavigate();
+
+  // Get user info
+  const getUserInfo = async () => {
+    try {
+      const response = await axiosInstance.get('/get-user');
+      if (response.data && response.data.user) {
+        setUserInfo(response.data.user);
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        localStorage.clear();
+        navigate("/login");
+      }
+    }
+  };
 
   return (
     <>
