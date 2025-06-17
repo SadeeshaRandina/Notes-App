@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Navbar from '../../components/Navbar/Navbar';
 import NoteCard from '../../components/Cards/NoteCard';
-import { MdAdd } from 'react-icons/md';
+import { MdAdd, MdComment } from 'react-icons/md';
 import AddEditNotes from './AddEditNotes';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
@@ -17,6 +17,7 @@ const Home = () => {
     data: null // Note object for editing
   });
 
+  const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
 
   const navigate = useNavigate();
@@ -36,7 +37,22 @@ const Home = () => {
     }
   };
 
+  // Get all notes
+  const getAllNotes = async () => {
+    try {
+      const response = await axiosInstance.get('/get-all-notes');
+
+      if (response.data && response.data.notes) {
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    }
+  };
+
+
   useEffect(() => {
+    getAllNotes();
     getUserInfo();
     return () => {
     }
@@ -48,16 +64,19 @@ const Home = () => {
 
       <div className='container mx-auto'> 
         <div className="grid grid-cols-3 gap-4 mt-8">
-          <NoteCard 
-            title="Sample Note"
-            date="2023-10-01"
-            content="This is a sample note content that is used to demonstrate the NoteCard component."
-            tags="#sample #note"
-            isPinned={false}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onPinNote={() => {}}
-          />
+          {allNotes.map((item, index) => (
+            <NoteCard 
+              key={item._id}
+              title={item.title}
+              date={item.createdOn}
+              content={item.content}
+              tags={item.tags}
+              isPinned= {item.isPinned}
+              onEdit={() => {}}
+              onDelete={() => {}}
+              onPinNote={() => {}}
+            />
+          ))}
         </div>
       </div>
 
