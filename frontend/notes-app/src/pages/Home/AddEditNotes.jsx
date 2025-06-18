@@ -6,7 +6,7 @@ import { get, set } from 'mongoose';
 import axiosInstance from '../../utils/axiosInstance';
 
 
-const AddEditNotes = ({noteData, type, getAllNotes, onClose}) => {
+const AddEditNotes = ({noteData, type, getAllNotes, onClose, showToastMessage}) => {
 
     const [title, setTitle] = useState(noteData?.title || '');
     const [content, setContent] = useState(noteData?.content || '');  
@@ -24,6 +24,7 @@ const AddEditNotes = ({noteData, type, getAllNotes, onClose}) => {
             });
 
             if (response.data && response.data.note){
+                showToastMessage("Note added successfully");
                 getAllNotes();
                 onClose();
             }
@@ -51,6 +52,7 @@ const AddEditNotes = ({noteData, type, getAllNotes, onClose}) => {
             });
 
             if (response.data && response.data.note){
+                showToastMessage("Note updated successfully");
                 getAllNotes();
                 onClose();
             }
