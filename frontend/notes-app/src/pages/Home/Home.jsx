@@ -9,6 +9,8 @@ import Modal from 'react-modal';
 import { set } from 'mongoose';
 import axiosInstance from '../../utils/axiosInstance';
 import Toast from '../../components/ToastMessage/Toast';
+import EmptyCard from '../../components/EmptyCard/EmptyCard';
+
 
 const Home = () => {
 
@@ -80,6 +82,30 @@ const Home = () => {
     }
   };
 
+  // Delete note
+  const deleteNote = async (data) => {
+    
+    const noteId = data._id;
+
+    try {
+      const response = await axiosInstance.delete("/delete-note/" + noteId);
+
+      if (response.data && !response.data.error){
+          showToastMessage("Note deleted successfully", "delete");
+          getAllNotes();
+          
+      }
+      } catch (error) {
+          if (
+              error.response &&
+              error.response.data &&
+              error.response.data.message
+          ){
+            console.error("Error fetching notes:", error);  
+          }
+      }
+}
+
 
   useEffect(() => {
     getAllNotes();
@@ -93,21 +119,22 @@ const Home = () => {
       <Navbar userInfo={userInfo}/>
 
       <div className='container mx-auto'> 
-        <div className="grid grid-cols-3 gap-4 mt-8">
-          {allNotes.map((item, index) => (
-            <NoteCard 
-              key={item._id}
-              title={item.title}
-              date={item.createdOn}
-              content={item.content}
-              tags={item.tags}
-              isPinned= {item.isPinned}
-              onEdit={() => handleEdit(item)}
-              onDelete={() => {}}
-              onPinNote={() => {}}
-            />
-          ))}
-        </div>
+        {allNotes.length > 0 ? (
+          <div className="grid grid-cols-3 gap-4 mt-8">
+            {allNotes.map((item, index) => (
+              <NoteCard 
+                key={item._id}
+                title={item.title}
+                date={item.createdOn}
+                content={item.content}
+                tags={item.tags}
+                isPinned= {item.isPinned}
+                onEdit={() => handleEdit(item)}
+                onDelete={() => deleteNote(item)}
+                onPinNote={() => {}}
+              />
+            ))}
+          </div> ) : (<EmptyCard />)}
       </div>
 
       <button 
