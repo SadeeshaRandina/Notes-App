@@ -130,8 +130,26 @@ const Home = () => {
 
   // Pin a note
   const updateIsPinned = async (noteData) => {
+    const noteId = noteData._id;
+    const isCurrentlyPinned = noteData.isPinned;
 
-  };
+    try {
+      const response = await axiosInstance.put("/update-is-pinned/" + noteId, {
+        isPinned: !isCurrentlyPinned,
+      });
+
+      if (response.data && response.data.note) {
+        const message = isCurrentlyPinned
+          ? "Note unpinned successfully"
+          : "Note pinned successfully";
+
+        showToastMessage(message, "edit"); // You can change "edit" to any toast type you want
+        getAllNotes();
+      }
+    } catch (error) {
+      console.log("Error updating note:", error);
+    }
+};
 
   const handleClearSearch = () => {
     setIsSearch(false);
@@ -167,7 +185,7 @@ const Home = () => {
                 isPinned= {item.isPinned}
                 onEdit={() => handleEdit(item)}
                 onDelete={() => deleteNote(item)}
-                onPinNote={() => {}}
+                onPinNote={() => updateIsPinned(item)}
               />
             ))}
           </div> ) : (
