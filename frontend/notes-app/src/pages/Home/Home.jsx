@@ -10,6 +10,8 @@ import { set } from 'mongoose';
 import axiosInstance from '../../utils/axiosInstance';
 import Toast from '../../components/ToastMessage/Toast';
 import EmptyCard from '../../components/EmptyCard/EmptyCard';
+import AddNoteImg from '../../assets/images/add-notes.jpg';
+import NoDataImg from '../../assets/images/no-data.png';
 
 
 const Home = () => {
@@ -28,6 +30,8 @@ const Home = () => {
 
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+
+  const [isSearch, setIsSearch] = useState(false);
 
   const navigate = useNavigate();
 
@@ -104,7 +108,35 @@ const Home = () => {
             console.error("Error fetching notes:", error);  
           }
       }
-}
+};
+
+  // Search for a note
+  const OnSearchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get("/search-notes", {
+        params: {
+          query: query
+        }
+      });
+
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.error("Error searching notes:", error);
+    }
+  };
+
+  // Pin a note
+  const updateIsPinned = async (noteData) => {
+
+  };
+
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  };
 
 
   useEffect(() => {
@@ -116,7 +148,11 @@ const Home = () => {
 
   return (
     <>
-      <Navbar userInfo={userInfo}/>
+      <Navbar 
+        userInfo={userInfo} 
+        OnSearchNote={OnSearchNote} 
+        handleClearSearch={handleClearSearch}
+      />
 
       <div className='container mx-auto'> 
         {allNotes.length > 0 ? (
@@ -134,7 +170,11 @@ const Home = () => {
                 onPinNote={() => {}}
               />
             ))}
-          </div> ) : (<EmptyCard />)}
+          </div> ) : (
+            <EmptyCard 
+              imgSrc={isSearch ? NoDataImg : AddNoteImg} 
+              message={isSearch ? `Oops! No notes found matching your search.` : `Start creating your first note! Click the '+' button to jot down your
+            thoughts, ideas, and reminders. Let's get started!`} />)}
       </div>
 
       <button 
