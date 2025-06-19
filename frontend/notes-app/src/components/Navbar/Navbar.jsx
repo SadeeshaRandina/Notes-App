@@ -1,45 +1,42 @@
-import React, { use } from 'react'
+import React from 'react'
 import ProfileInfo from '../../components/Cards/ProfileInfo'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 import SearchBar from '../../components/SearchBar/SearchBar'
-import { useState } from 'react';
+import { useState } from 'react'
 
-const Navbar = ({userInfo, OnSearchNote, handleClearSearch}) => {
+const Navbar = ({ userInfo, OnSearchNote, handleClearSearch }) => {
+  const [searchQuery, setSearchQuery] = useState("")
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const Navigate = useNavigate();
+  const Navigate = useNavigate()
 
   const onLogout = () => {
     localStorage.clear()
-    Navigate("/login");
-  };
+    Navigate("/login")
+  }
 
   const handleSearch = () => {
-    if (searchQuery){
+    if (searchQuery) {
       OnSearchNote(searchQuery)
     }
-  };
+  }
 
   const onClearSearch = () => {
-    setSearchQuery("");
-    handleClearSearch();
-  };
+    setSearchQuery("")
+    handleClearSearch()
+  }
 
   return (
-    <div className="bg-white flex items-center justify-between p-6 py-2 drop-shadow">
-        <h2 className="text-xl font-medium text-black py-2">Notes</h2>
+    <div className="bg-gradient-to-r from-[#eaf7ef] to-[#d6eee0] flex items-center justify-between px-6 py-3 shadow-md">
+      <h2 className="text-2xl font-semibold text-[#1a3e2d] tracking-wide">Notes</h2>
 
-        <SearchBar 
-          value={searchQuery}
-          onChange={({target}) => {
-            setSearchQuery(target.value);
-          }}
-          handleSearch={handleSearch}
-          onClearSearch={onClearSearch}
-        />
+      <SearchBar
+        value={searchQuery}
+        onChange={({ target }) => setSearchQuery(target.value)}
+        handleSearch={handleSearch}
+        onClearSearch={onClearSearch}
+      />
 
-        <ProfileInfo userInfo={userInfo} onLogout={onLogout}/>
+      <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
     </div>
   )
 }
