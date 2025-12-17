@@ -17,6 +17,8 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const { authenticateToken } = require('./utilities');
 
+const PORT = process.env.PORT || 8000;
+
 // Middleware order is important
 app.use(cors({
     origin: "*",
@@ -341,8 +343,8 @@ app.get('/search-notes', authenticateToken, async (req, res) => {
 
 
 
-app.listen(8000, () => {
-    console.log('Server running on port 8000');
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app;
